@@ -46,7 +46,7 @@ from urllib.parse import urlsplit, urlunsplit
 
 import pandas as pd
 
-# ── Constants ──────────────────────────────────────────────────────────────
+# ── Constants ───────────────────────────────────────────────────────────[...]
 SCAN_RESULTS_PATH = Path('scan-results.xlsx')
 ESTIMATE_SCENARIOS_PATH = Path('estimate_scenarios.xlsx')
 
@@ -72,7 +72,7 @@ USER_AGENT = (
 )
 
 
-# ── URL helpers ────────────────────────────────────────────────────────────
+# ── URL helpers ──────────────────────────────────────────────────────────�[...]
 
 def _normalize_url(url: str) -> str:
     """Normalize a Learn URL for stable matching.
@@ -137,7 +137,7 @@ def _check_url(url: str, timeout: int) -> tuple:
             return url, None, False, str(exc)
 
 
-# ── Main ───────────────────────────────────────────────────────────────────
+# ── Main ────────────────────────────────────────────────────────────�[...]
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
@@ -151,14 +151,14 @@ def main():
     )
     args = ap.parse_args()
 
-    # ── Load data ──────────────────────────────────────────────────────────
+    # ── Load data ─────────────────────────────────────────────────────────�[...]
     if not SCAN_RESULTS_PATH.exists():
         sys.exit(f'ERROR: {SCAN_RESULTS_PATH} not found. Run the scan and compare steps first.')
     if not ESTIMATE_SCENARIOS_PATH.exists():
         sys.exit(f'ERROR: {ESTIMATE_SCENARIOS_PATH} not found.')
 
-    scan_df = pd.read_excel(SCAN_RESULTS_PATH)
-    est_df = pd.read_excel(ESTIMATE_SCENARIOS_PATH)
+    scan_df = pd.read_excel(SCAN_RESULTS_PATH, engine='openpyxl')
+    est_df = pd.read_excel(ESTIMATE_SCENARIOS_PATH, engine='openpyxl')
 
     if YML_URL_COL not in est_df.columns:
         sys.exit(f'ERROR: estimate_scenarios.xlsx is missing required column: {YML_URL_COL}')
@@ -355,7 +355,7 @@ def main():
     existing_sheets = {}
     with pd.ExcelFile(SCAN_RESULTS_PATH, engine='openpyxl') as xf:
         for sheet_name in xf.sheet_names:
-            existing_sheets[sheet_name] = pd.read_excel(xf, sheet_name=sheet_name)
+            existing_sheets[sheet_name] = pd.read_excel(xf, sheet_name=sheet_name, engine='openpyxl')
 
     # Build updated summary with inventory health section appended
     summary_df = existing_sheets.get('summary', pd.DataFrame({'Metric': [], 'Value': []}))
