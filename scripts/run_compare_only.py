@@ -97,8 +97,8 @@ def _split_estimate_links(cell_value) -> list:
 
 
 # --- Load data ---
-scan_df = pd.read_excel(SCAN_RESULTS_PATH)
-est_df = pd.read_excel(ESTIMATE_SCENARIOS_PATH)
+scan_df = pd.read_excel(SCAN_RESULTS_PATH, engine='openpyxl')
+est_df = pd.read_excel(ESTIMATE_SCENARIOS_PATH, engine='openpyxl')
 
 required_scan = {YML_URL_COL, ESTIMATE_LINK_COL, CRITERIA_COL}
 missing_scan = required_scan - set(scan_df.columns)
