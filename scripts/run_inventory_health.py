@@ -157,8 +157,11 @@ def main():
     if not ESTIMATE_SCENARIOS_PATH.exists():
         sys.exit(f'ERROR: {ESTIMATE_SCENARIOS_PATH} not found.')
 
-    scan_df = pd.read_excel(SCAN_RESULTS_PATH, engine='openpyxl')
-    est_df = pd.read_excel(ESTIMATE_SCENARIOS_PATH, engine='openpyxl')
+    scan_df = pd.read_excel(SCAN_RESULTS_PATH)
+    try:
+        est_df = pd.read_excel(ESTIMATE_SCENARIOS_PATH, engine='openpyxl')
+    except Exception:
+        est_df = pd.read_excel(ESTIMATE_SCENARIOS_PATH, engine='xlrd')
 
     if YML_URL_COL not in est_df.columns:
         sys.exit(f'ERROR: estimate_scenarios.xlsx is missing required column: {YML_URL_COL}')
@@ -355,7 +358,7 @@ def main():
     existing_sheets = {}
     with pd.ExcelFile(SCAN_RESULTS_PATH, engine='openpyxl') as xf:
         for sheet_name in xf.sheet_names:
-            existing_sheets[sheet_name] = pd.read_excel(xf, sheet_name=sheet_name, engine='openpyxl')
+            existing_sheets[sheet_name] = pd.read_excel(xf, sheet_name=sheet_name)
 
     # Build updated summary with inventory health section appended
     summary_df = existing_sheets.get('summary', pd.DataFrame({'Metric': [], 'Value': []}))

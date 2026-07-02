@@ -47,7 +47,7 @@ from pathlib import Path
 
 import pandas as pd
 
-# ── Paths ──────────────────────────────────────────────────────────────────
+# ── Paths ────────────────────────────────────────────────────────────�[...]
 SCAN_RESULTS_PATH = Path('scan-results.xlsx')
 ESTIMATE_SCENARIOS_PATH = Path('estimate_scenarios.xlsx')
 
@@ -67,7 +67,7 @@ IMG_NOT_FOUND = 'image_not_found'
 IMG_SKIPPED = 'skipped'
 
 
-# ── Hashing ────────────────────────────────────────────────────────────────
+# ── Hashing ───────────────────────────────────────────────────────────��[...]
 
 def sha256_file(path: Path) -> str:
     """Return the hex SHA-256 digest of a file's bytes."""
@@ -78,7 +78,7 @@ def sha256_file(path: Path) -> str:
     return h.hexdigest()
 
 
-# ── Main ───────────────────────────────────────────────────────────────────
+# ── Main ────────────────────────────────────────────────────────────��[...]
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
@@ -94,7 +94,7 @@ def main():
     repo_root = Path(args.repo_root).resolve()
     update_baseline_mode = args.update_baseline
 
-    # ── Load data ──────────────────────────────────────────────────────────
+    # ── Load data ─────────────────────────────────────────────────────────��[...]
     if not update_baseline_mode and not SCAN_RESULTS_PATH.exists():
         sys.exit(f'ERROR: {SCAN_RESULTS_PATH} not found. Run scan and compare steps first.')
     if not ESTIMATE_SCENARIOS_PATH.exists():
@@ -105,7 +105,10 @@ def main():
     else:
         print('Mode: DETECT — comparing current hashes against stored baseline.')
 
-    est_df = pd.read_excel(ESTIMATE_SCENARIOS_PATH, dtype=str).fillna('')
+    try:
+        est_df = pd.read_excel(ESTIMATE_SCENARIOS_PATH, dtype=str, engine='openpyxl').fillna('')
+    except Exception:
+        est_df = pd.read_excel(ESTIMATE_SCENARIOS_PATH, dtype=str, engine='xlrd').fillna('')
 
     # Build title_in_ac lookup from scan-results.xlsx if available
     # (run after the scan step so scan-results.xlsx exists)
