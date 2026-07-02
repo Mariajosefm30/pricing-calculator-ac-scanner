@@ -11,6 +11,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/checkout@v4
+        with:
+          repository: MicrosoftDocs/architecture-center
+          path: architecture-center
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -29,7 +34,7 @@ jobs:
 
       # 1) Run the real scanner -> JSON
       - name: Run scanner (YML-based)
-        run: python scripts/scan_architecture_center_yml.py --branch main --docs-root docs --output scan-results.json
+        run: python scripts/scan_architecture_center_yml.py --branch main --docs-root architecture-center/docs --output scan-results.json
 
       # 2) Convert JSON -> scan-results.xlsx with FIRST sheet named "scan-results"
       - name: Build scan-results.xlsx for comparison
@@ -50,7 +55,7 @@ jobs:
       #    NOT update the baseline. Baseline is updated only via the separate
       #    'Update Image Baseline' workflow after changes have been actioned.
       - name: Run image change detection
-        run: python scripts/run_image_check.py --repo-root .
+        run: python scripts/run_image_check.py --repo-root architecture-center
 
       - name: Upload scan results
         uses: actions/upload-artifact@v4
